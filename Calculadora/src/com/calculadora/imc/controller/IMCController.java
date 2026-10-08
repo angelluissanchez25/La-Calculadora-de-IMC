@@ -4,9 +4,9 @@ package com.calculadora.imc.controller;
  *
  * @author Angel Luis Sánchez Pérez
  */
-
 import com.calculadora.imc.model.CalculadoraIMC;
 import com.calculadora.imc.view.CalculadoraView;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,6 +21,7 @@ public class IMCController {
     }
 
     private class CalcularListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             String strPeso = vista.getPeso().trim().replace(',', '.');
@@ -41,7 +42,19 @@ public class IMCController {
                 double imc = calculadora.calcular(peso, altura);
                 String clasificacion = calculadora.clasificar(imc);
 
-                vista.mostrarResultado(imc, clasificacion);
+                // Lógica del reto opcional: Selección de color según la clasificación
+                Color color = switch (clasificacion) {
+                    case "Peso Normal" ->
+                        new Color(40, 167, 69); // Verde
+                    case "Bajo Peso", "Sobrepeso" ->
+                        Color.ORANGE; // Naranja
+                    case "Obesidad" ->
+                        Color.RED;                  // Rojo
+                    default ->
+                        Color.BLACK;
+                };
+
+                vista.mostrarResultado(imc, clasificacion, color);
             } catch (IllegalArgumentException ex) {
                 vista.mostrarError("Error: " + ex.getMessage());
             }
